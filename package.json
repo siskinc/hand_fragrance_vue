@@ -10,9 +10,13 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "iview": "^3.4.1",
+    "qs": "latest",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.1",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-wechat-title": "^2.0.5"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

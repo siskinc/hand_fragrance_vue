@@ -1,83 +1,101 @@
+`
 <template>
-  <div class="homepage-hero-module">
-    <div class="video-container">
-      <div :style="fixStyle" class="filter"></div>
-      <video :style="fixStyle" autoplay loop class="fillWidth" v-on:canplay="canplay">
-        <source src="PATH_TO_MP4" type="video/mp4"/>
-        浏览器不支持 video 标签，建议升级浏览器。
-        <source src="PATH_TO_WEBM" type="video/webm"/>
-        浏览器不支持 video 标签，建议升级浏览器。
-      </video>
-      <div class="poster hidden" v-if="!vedioCanPlay">
-        <img :style="fixStyle" src="PATH_TO_JPEG" alt="">
-      </div>
+    <div>
+        <div class="log_container">
+            <div class="log_form">
+                <!-- 登录提示 -->
+                <div class="log_remind">
+                    登录
+                </div>
+                <!-- 用户名 -->
+                <div class="log_user_container">
+                    <label id="log_user_label" for="log_user">
+                    </label>
+                    <input type="text" v-model="form.userName" name="name" id="log_user" placeholder="账号/手机号"/>
+                </div>
+                <!-- 密码 -->
+                <div class="log_password_container">
+                    <label id="log_password_label" for="log_password">
+                    </label>
+                    <input v-model="form.password" type="password" name="password" id="log_password"
+                           placeholder="密码/三次输入错误则会有验证码"/>
+                </div>
+                <!-- 登录按钮 -->
+                <div class="log_btn cursor_pointer" @click="login">
+                    &nbsp;登录
+                </div>
+                <!-- 其他方式登录 -->
+                <div class="log_other">
+                    <p style="float:left;">
+                        第三方登录：
+                    </p>
+                    <p style="float:left;">
+                        <a href="#" class="cursor_pointer log_qq" title="qq登录"></a>
+                    </p>
+                    <p style="float:left;">
+                        <a href="#" class="cursor_pointer log_weixin" title="微信登录"></a>
+                    </p>
+                    <p style="float:left;">
+                        <a href="#" class="cursor_pointer log_weibo" title="新浪微博"></a>
+                    </p>
+                </div>
+                <!-- 底部各种 -->
+                <div class="log_bottom">
+                    <p>
+                        <router-link to="/">返回首页</router-link>
+                    </p>
+                    <p>
+                        <a href="">忘记密码</a>
+                    </p>
+                    <p class="log_login">
+                        <a href="#">注册账号</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="log_body">
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
-  export default {
-    name: "login",
-    data() {
-      return {
-        vedioCanPlay: false,
-        fixStyle: ''
-      }
-    },
-    methods: {
-      canplay() {
-        this.vedioCanPlay = true
-      }
-    },
-    mounted: function () {
-      window.onresize = () => {
-        const windowWidth = document.body.clientWidth
-        const windowHeight = document.body.clientHeight
-        const windowAspectRatio = windowHeight / windowWidth
-        let videoWidth
-        let videoHeight
-        if (windowAspectRatio < 0.5625) {
-          videoWidth = windowWidth
-          videoHeight = videoWidth * 0.5625
-          this.fixStyle = {
-            height: windowWidth * 0.5625 + 'px',
-            width: windowWidth + 'px',
-            'margin-bottom': (windowHeight - videoHeight) / 2 + 'px',
-            'margin-left': 'initial'
-          }
-        } else {
-          videoHeight = windowHeight
-          videoWidth = videoHeight / 0.5625
-          this.fixStyle = {
-            height: windowHeight + 'px',
-            width: windowHeight / 0.5625 + 'px',
-            'margin-left': (windowWidth - videoWidth) / 2 + 'px',
-            'margin-bottom': 'initial'
-          }
+    import '../../../static/css/body.css'
+    import '../../../static/css/yy.css'
+    import '../../../static/css/login.css'
+    import {login} from '../../../api/login'
+
+    export default {
+        name: "login",
+        data() {
+            return {
+                form: {
+                    userName: '',
+                    password: ''
+                }
+            }
+        },
+        methods: {
+            login() {
+                if (!this.form.userName || !this.form.password) {
+                    this.$Message.error("请输入用户名和密码")
+                    return
+                }
+                login(this.form).then(res => {
+                    let data = res.data
+                    if (data.status === 0) {
+                        console.log("登录成功")
+                        this.$router.push({
+                            name: "index"
+                        })
+                    } else {
+                        this.$Message.error("用户名或密码错误")
+                    }
+                })
+            }
+        },
+        mounted: function () {
+
         }
-      }
-      window.onresize()
     }
-  }
 </script>
-
-<style scoped>
-  .homepage-hero-module,
-  .video-container {
-    position: relative;
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .video-container .poster img,
-  .video-container video {
-    z-index: 0;
-    position: absolute;
-  }
-
-  .video-container .filter {
-    z-index: 1;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.4);
-  }
-</style>
+`
