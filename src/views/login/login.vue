@@ -11,7 +11,7 @@
                 <div class="log_user_container">
                     <label id="log_user_label" for="log_user">
                     </label>
-                    <input type="text" v-model="form.userName" name="name" id="log_user" placeholder="账号/手机号"/>
+                    <input type="text" v-model="form.username" name="name" id="log_user" placeholder="账号/手机号"/>
                 </div>
                 <!-- 密码 -->
                 <div class="log_password_container">
@@ -59,37 +59,41 @@
 </template>
 
 <script>
-    import '../../../static/css/body.css'
-    import '../../../static/css/yy.css'
-    import '../../../static/css/login.css'
-    import {login} from '../../../api/login'
+    import '../../../static/css/body.css';
+    import '../../../static/css/daryl.css';
+    import '../../../static/css/login.css';
+    import {login} from '../../../api/login';
 
     export default {
         name: "login",
         data() {
             return {
                 form: {
-                    userName: '',
+                    username: '',
                     password: ''
                 }
             }
         },
         methods: {
             login() {
-                if (!this.form.userName || !this.form.password) {
+                if (!this.form.username || !this.form.password) {
                     this.$Message.error("请输入用户名和密码")
                     return
                 }
                 login(this.form).then(res => {
                     let data = res.data
-                    if (data.status === 0) {
+                    if (data.success === 1) {
                         console.log("登录成功")
+                        this.$Message.success("登录成功")
                         this.$router.push({
                             name: "index"
                         })
                     } else {
-                        this.$Message.error("用户名或密码错误")
+                        console.log(data.data)
+                        this.$Message.error("用户名或密码错误！")
                     }
+                }).catch(res => {
+                    this.$Message.error("登录失败！")
                 })
             }
         },
